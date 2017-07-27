@@ -2,7 +2,7 @@ project(StmSample C ASM)
 cmake_minimum_required(VERSION 3.7)
 
 file(GLOB_RECURSE UART_DMA_SOURCE "uart_dma/src/*.c")
-file(GLOB_RECURSE UART_SOURCE "uart/src/*.c")
+file(GLOB_RECURSE UART_SOURCE "uart/*.c")
 
 add_library(SPL
         Drivers/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_gpio.c
@@ -17,6 +17,10 @@ add_library(CMSIS
 
 add_library(UART
         uart/src/uart_driver.c)
+
+add_library(UTILS
+        utils/printf.c
+        utils/queue.c)
 #add_library(UART uart/src/*.c uart/src/uart_driver.c.c uart/src/uart_driver.c.h)
 
 include_directories(uart_dma/inc)
@@ -25,6 +29,7 @@ include_directories(Drivers/CMSIS/Device/ST/STM32F4xx/Include)
 include_directories(Drivers/STM32F4xx_StdPeriph_Driver/inc)
 
 include_directories(uart/inc)
+include_directories(utils)
 
 add_definitions(-DDiscovery)
 add_definitions(-DSTM32F40_41xxx)
@@ -33,6 +38,10 @@ add_definitions(-DSTM32F40_41xxx)
 add_definitions(-DLOG_SPEED=115200)
 add_definitions(-DLOG_USART3)
 add_definitions(-DLOG_DMA)
+add_definitions(-DLOG_BUF)
+
+#add_definitions(-DREENTRANT_SYSCALLS_PROVIDED)
+#add_definitions(-DMISSING_SYSCALL_NAMES)
 
 
 
@@ -41,7 +50,7 @@ add_executable(UartTest.elf ${UART_SOURCE} ${LINKER_SCRIPT})
 
 target_link_libraries(UartDMA.elf SPL CMSIS)
 
-target_link_libraries(UartTest.elf SPL CMSIS UART)
+target_link_libraries(UartTest.elf SPL CMSIS UART UTILS)
 
 
 set(HEX_FILE ${PROJECT_SOURCE_DIR}/build/UartDMA.hex)

@@ -1,6 +1,7 @@
+#include <uart_driver.h>
 #include "stm32f4xx.h"
-#include "stm32f4xx_dma.h"
-#include "misc.h"
+//#include "stm32f4xx_dma.h"
+//#include "misc.h"
 
 //#include "uart_driver.h"
 //#include ""
@@ -8,8 +9,11 @@
 DMA_InitTypeDef DMA_InitStruct_USART;
 USART_TypeDef* logUart;
 
-uint8_t buffer_uart_tx_1[]="Hello world";
-//uint8_t buffer_uart_tx_2[];
+#if defined(LOG_BUF)
+    LoggerQueue log;
+#endif
+
+void initLoggerQueue();
 
 void initLogger(){
     GPIO_InitTypeDef  GPIO;
@@ -101,23 +105,41 @@ void initLogger(){
     DMA_InitStruct_USART.DMA_PeripheralBurst = DMA_PeripheralBurst_Single;
 #endif
 
+#if defined(LOG_BUF)
+    initLoggerQueue(&log);
+#endif
+
 }
 
-void sendStringByDMA(){
+
+//todo realize only for usart 3
+void sendStringByDMA(char *str, uint8_t size){
     while(USART_GetFlagStatus(USART3, USART_FLAG_TC) == RESET){
     }
     DMA_Cmd(DMA1_Stream3, DISABLE);
     while(DMA_GetCmdStatus(DMA1_Stream3) == ENABLE){}
     DMA_DeInit(DMA1_Stream3);
 
-    DMA_InitStruct_USART.DMA_Memory0BaseAddr =  (uint32_t)&buffer_uart_tx_1;
-    DMA_InitStruct_USART.DMA_BufferSize = 11;
+    DMA_InitStruct_USART.DMA_Memory0BaseAddr =  (uint32_t)str;
+    DMA_InitStruct_USART.DMA_BufferSize = size;
     DMA_Init(DMA1_Stream3, &DMA_InitStruct_USART);
     USART_DMACmd(USART3, USART_DMAReq_Tx, ENABLE);
     DMA_Cmd(DMA1_Stream3, ENABLE);
 }
+void sendStringByDMAandWait(char *str, uint8_t size){
+    sendStringByDMA(str, size);
+    while(!DMA_GetFlagStatus(DMA1_Stream3, DMA_FLAG_TCIF3)){}
+}
+void sendStringByDMAAfterWait(char *str, uint8_t size){
+    if(DMA_GetCmdStatus(DMA1_Stream3) == ENABLE){
+        while(!DMA_GetFlagStatus(DMA1_Stream3, DMA_FLAG_TCIF3)){}
+    }
+    sendStringByDMA(str, size);
+}
 
 
+
+//DEPRECATED
 void initUART(USART_TypeDef* UART, uint32_t speed){
     GPIO_InitTypeDef  GPIO;
     USART_InitTypeDef USART;
@@ -171,10 +193,41 @@ void initUART(USART_TypeDef* UART, uint32_t speed){
     USART_Cmd(UART, ENABLE);
     logUart = UART;
 }
-
 void logByteUnsafe(char ch){
     USART_SendData(logUart, (uint16_t) ch);
+}
 
+//todo may be can extract to work with queue to external library
+void addToLoggerQueue(char *pointer, uint8_t size){
+    if(log.size < LOG_BUF_SIZE){
+        log.size++;
+        log.last = (uint8_t) ((log.first + log.size - 1) % LOG_BUF_SIZE);
+        log.pointers[log.last] = pointer;
+        log.sizes[log.last] = size;
+    }else{
+        //todo increment error counter
+    }
+}
+void takeFromLoggerQueue(Pair *pair){
+    pair->pointer = log.pointers[log.first];
+    pair->size = log.sizes[log.first];
+    if(log.first == LOG_BUF_SIZE - 1){
+        log.first = 0;
+    }else{
+        log.first ++;
+    }
+    log.size --;
+}
+uint8_t isContainsElementLoggerQueue(){
+    if(log.size > 0){
+        return 1;
+    }
+    return 0;
+}
+void initLoggerQueue(){
+    log.first = 0;
+    log.last = 0;
+    log.size = 0;
 }
 
 #if defined(LOG_USART1)
