@@ -1,0 +1,8 @@
+//
+// Created by Alex on 27.07.2017.
+//
+
+#ifndef STMSAMPLE_UART_BUFFER_H
+#define STMSAMPLE_UART_BUFFER_H
+
+#endif //STMSAMPLE_UART_BUFFER_H

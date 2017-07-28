@@ -16,7 +16,7 @@ add_library(CMSIS
         Drivers/CMSIS/Device/ST/STM32F4xx/Source/Templates/system_stm32f4xx.c)
 
 add_library(UART
-        uart/src/uart_driver.c)
+        uart/src/uart_logger.c)
 
 add_library(UTILS
         utils/printf.c
