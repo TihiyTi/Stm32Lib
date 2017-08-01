@@ -34,10 +34,10 @@ typedef struct {
     uint8_t maxsize;
 }QueueByte;
 
-void initQueueByte(QueueByte *A);
+void initQueueByte(QueueByte *A, uint8_t max);
 void addToQueueByte(QueueByte *A, uint8_t el);
-int8_t takeQueueByte(QueueByte *A);
+uint8_t takeQueueByte(QueueByte *A);
 uint8_t isContainsElementQueueByte(QueueByte *A);
-int8_t getElementQueueByte(QueueByte *A, uint8_t shift);
+uint8_t getElementQueueByte(QueueByte *A, uint8_t shift);
 
 #endif /* DSP_H_ */

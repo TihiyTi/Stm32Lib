@@ -16,7 +16,8 @@ add_library(CMSIS
         Drivers/CMSIS/Device/ST/STM32F4xx/Source/Templates/system_stm32f4xx.c)
 
 add_library(UART
-        uart/src/uart_logger.c)
+        uart/src/uart_logger.c
+        uart/src/uart_buffer.c)
 
 add_library(UTILS
         utils/printf.c
@@ -35,13 +36,16 @@ add_definitions(-DDiscovery)
 add_definitions(-DSTM32F40_41xxx)
 #add_definitions(-DARM_MATH_CM4)
 
+#Logger defines
+
 add_definitions(-DLOG_SPEED=115200)
 add_definitions(-DLOG_USART3)
 add_definitions(-DLOG_DMA)
 add_definitions(-DLOG_BUF)
 
-#add_definitions(-DREENTRANT_SYSCALLS_PROVIDED)
-#add_definitions(-DMISSING_SYSCALL_NAMES)
+
+add_definitions(-DBUFFER_UART3)
+
 
 
 

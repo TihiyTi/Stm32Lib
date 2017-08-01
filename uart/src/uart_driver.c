@@ -3,9 +3,27 @@
 //
 
 #include <stm32f4xx.h>
+#include <misc.h>
 #include "uart_driver.h"
+#include "stm32f4xx_usart.h"
+
+uint8_t testArray[] = {1,2,3,4,5,6,7,8,9,10};
+
+void configUSART(USART_TypeDef* UART, uint32_t speed);
+void configDMAforUSART(USART_TypeDef* UART);
+void configIRQforUSART(USART_TypeDef* UART);
 
 void initUSART(USART_TypeDef* UART, uint32_t speed, DMA_Trancieve_State dma_state, IRQ_Recieve_State irq_state){
+    configUSART(UART, speed);
+    if(dma_state == DMA_ENABLE){
+        configDMAforUSART(UART);
+    }
+    if(irq_state == IRQ_ENABLE){
+        configIRQforUSART(UART);
+    }
+}
+
+void configUSART(USART_TypeDef* UART, uint32_t speed){
     GPIO_InitTypeDef  GPIO;
     USART_InitTypeDef USART;
 
@@ -56,6 +74,101 @@ void initUSART(USART_TypeDef* UART, uint32_t speed, DMA_Trancieve_State dma_stat
 
     USART_Init(UART, &USART);
     USART_Cmd(UART, ENABLE);
+}
+void configDMAforUSART(USART_TypeDef* UART){
+    DMA_InitTypeDef DMA_InitStruct_USART;
+    DMA_StructInit(&DMA_InitStruct_USART);
+    switch ((uint32_t)UART) {
+        case (uint32_t) USART1:
+            RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_DMA2, ENABLE);
+            DMA_InitStruct_USART.DMA_Channel = DMA_Channel_4;
+            DMA_InitStruct_USART.DMA_PeripheralBaseAddr = (uint32_t)&(USART1->DR);
+            break;
+        case (uint32_t) USART2:
+            //todo не реализовано для USART2
+            break;
+        case (uint32_t) USART3:
+            RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_DMA1, ENABLE);
+            DMA_InitStruct_USART.DMA_Channel = DMA_Channel_4;
+            DMA_InitStruct_USART.DMA_PeripheralBaseAddr = (uint32_t)&(USART3->DR);
+            break;
+        default:
+            break;
+    }
 
+    DMA_InitStruct_USART.DMA_DIR = DMA_DIR_MemoryToPeripheral;
+    DMA_InitStruct_USART.DMA_PeripheralInc = DMA_PeripheralInc_Disable;
+    DMA_InitStruct_USART.DMA_MemoryInc = DMA_MemoryInc_Enable;
+    DMA_InitStruct_USART.DMA_PeripheralDataSize = DMA_PeripheralDataSize_Byte;
+    DMA_InitStruct_USART.DMA_MemoryDataSize = DMA_MemoryDataSize_Byte;
+    DMA_InitStruct_USART.DMA_Mode = DMA_Mode_Normal;
+    DMA_InitStruct_USART.DMA_Priority = DMA_Priority_Medium;
+    DMA_InitStruct_USART.DMA_FIFOMode = DMA_FIFOMode_Disable;
+    DMA_InitStruct_USART.DMA_FIFOThreshold = DMA_FIFOThreshold_HalfFull;
+    DMA_InitStruct_USART.DMA_MemoryBurst = DMA_MemoryBurst_Single;
+    DMA_InitStruct_USART.DMA_PeripheralBurst = DMA_PeripheralBurst_Single;
+}
+void configIRQforUSART(USART_TypeDef* UART){
+    NVIC_InitTypeDef nvic;
+    switch ((uint32_t)UART) {
+        case (uint32_t) USART1:
+            USART_ITConfig(USART1, USART_IT_RXNE, ENABLE);
+            NVIC_EnableIRQ(USART1_IRQn);
+            nvic.NVIC_IRQChannel = USART1_IRQn;
+            break;
+        case (uint32_t) USART2:
+            USART_ITConfig(USART2, USART_IT_RXNE, ENABLE);
+            NVIC_EnableIRQ(USART2_IRQn);
+            nvic.NVIC_IRQChannel = USART2_IRQn;
+            break;
+        case (uint32_t) USART3:
+            USART_ITConfig(USART3, USART_IT_RXNE, ENABLE);
+            NVIC_EnableIRQ(USART3_IRQn);
+            nvic.NVIC_IRQChannel = USART3_IRQn;
+            break;
+        default:
+            break;
+    }
+    nvic.NVIC_IRQChannelCmd = ENABLE;
+    nvic.NVIC_IRQChannelPreemptionPriority = 0;
+    nvic.NVIC_IRQChannelSubPriority = 0;
+    NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);
+    NVIC_Init(&nvic);
+}
+
+void sendUARTByDMA(USART_TypeDef* UART, uint8_t *array, uint8_t size){
+    while(USART_GetFlagStatus(USART3, USART_FLAG_TC) == RESET){
+    }
+    DMA_Cmd(DMA1_Stream3, DISABLE);
+    while(DMA_GetCmdStatus(DMA1_Stream3) == ENABLE){}
+    DMA_DeInit(DMA1_Stream3);
+
+    DMA_InitTypeDef DMA_InitStruct_USART;
+    DMA_InitStruct_USART.DMA_Channel = DMA_Channel_4;
+    DMA_InitStruct_USART.DMA_PeripheralBaseAddr = (uint32_t)&(USART3->DR);
+    DMA_InitStruct_USART.DMA_DIR = DMA_DIR_MemoryToPeripheral;
+    DMA_InitStruct_USART.DMA_PeripheralInc = DMA_PeripheralInc_Disable;
+    DMA_InitStruct_USART.DMA_MemoryInc = DMA_MemoryInc_Enable;
+    DMA_InitStruct_USART.DMA_PeripheralDataSize = DMA_PeripheralDataSize_Byte;
+    DMA_InitStruct_USART.DMA_MemoryDataSize = DMA_MemoryDataSize_Byte;
+    DMA_InitStruct_USART.DMA_Mode = DMA_Mode_Normal;
+    DMA_InitStruct_USART.DMA_Priority = DMA_Priority_Medium;
+    DMA_InitStruct_USART.DMA_FIFOMode = DMA_FIFOMode_Disable;
+    DMA_InitStruct_USART.DMA_FIFOThreshold = DMA_FIFOThreshold_HalfFull;
+    DMA_InitStruct_USART.DMA_MemoryBurst = DMA_MemoryBurst_Single;
+    DMA_InitStruct_USART.DMA_PeripheralBurst = DMA_PeripheralBurst_Single;
+    DMA_InitStruct_USART.DMA_Memory0BaseAddr =  (uint32_t)array;
+    DMA_InitStruct_USART.DMA_BufferSize = size;
+    DMA_Init(DMA1_Stream3, &DMA_InitStruct_USART);
+    USART_DMACmd(USART3, USART_DMAReq_Tx, ENABLE);
+    DMA_Cmd(DMA1_Stream3, ENABLE);
+}
+
+void testUART(USART_TypeDef* UART){
+    USART_SendData(UART, 0xAA);
+    while (USART_GetFlagStatus(UART, USART_FLAG_TC) == RESET){}
+
+    sendUARTByDMA(UART, testArray, 10);
+    while(USART_GetFlagStatus(UART, USART_FLAG_TC) == RESET){}
 
 }

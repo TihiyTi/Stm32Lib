@@ -8,4 +8,7 @@
 typedef enum {DMA_DISABLE = 0, DMA_ENABLE = 1}DMA_Trancieve_State;
 typedef enum {IRQ_DISABLE = 0, IRQ_ENABLE = 1}IRQ_Recieve_State;
 
+void initUSART(USART_TypeDef* UART, uint32_t speed, DMA_Trancieve_State dma_state, IRQ_Recieve_State irq_state);
+void testUART(USART_TypeDef* UART);
+
 #endif //STMSAMPLE_UART_DRIVER_H

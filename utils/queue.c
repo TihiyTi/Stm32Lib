@@ -62,7 +62,7 @@ void addToQueueByte(QueueByte *A, uint8_t el){
 }
 
 // Not concurrency method
-int8_t getElementQueueByte(QueueByte *A, uint8_t shift){
+uint8_t getElementQueueByte(QueueByte *A, uint8_t shift){
     uint16_t i;
     if(shift > A->last){
         i = (uint16_t) (SIZE_DSP_BUFFER + A->last - shift);
@@ -73,8 +73,8 @@ int8_t getElementQueueByte(QueueByte *A, uint8_t shift){
 }
 
 // Not concurrency method
-int8_t takeQueueByte(QueueByte *A){
-    int8_t result;
+uint8_t takeQueueByte(QueueByte *A){
+    uint8_t result;
     result = A->buf[A->first];
     if(A->first == SIZE_DSP_BUFFER - 1){
         A->first = 0;
@@ -93,9 +93,10 @@ uint8_t isContainsElementQueueByte(QueueByte *A){
 
 }
 
-void initQueueByte(QueueByte *A){
+void initQueueByte(QueueByte *A, uint8_t max){
     A->first = 0;
     A->last = 0;
     A->size = 0;
+    A->maxsize = max;
 }
 
