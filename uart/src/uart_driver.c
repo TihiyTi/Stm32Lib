@@ -67,8 +67,12 @@ void configUSART(USART_TypeDef* UART, uint32_t speed){
             GPIO_Init(GPIOB, &GPIO);
             break;
         case (uint32_t)UART4:
-            RCC_AHB1PeriphClockCmd(RCC_APB1Periph_UART4, ENABLE);
-            //todo unsupported yet
+            RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOC, ENABLE);
+            RCC_APB1PeriphClockCmd(RCC_APB1Periph_UART4, ENABLE);
+            GPIO_PinAFConfig(GPIOC, GPIO_PinSource10, GPIO_AF_UART4);
+            GPIO_PinAFConfig(GPIOC, GPIO_PinSource11, GPIO_AF_UART4);
+            GPIO.GPIO_Pin = GPIO_Pin_10|GPIO_Pin_11;
+            GPIO_Init(GPIOC, &GPIO);
         default:break;
     }
 
@@ -92,6 +96,10 @@ void configDMAforUSART(USART_TypeDef* UART){
             DMA_InitStruct_USART.DMA_Channel = DMA_Channel_4;
             DMA_InitStruct_USART.DMA_PeripheralBaseAddr = (uint32_t)&(USART3->DR);
             break;
+        case (uint32_t) UART4:
+            RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_DMA1, ENABLE);
+            DMA_InitStruct_USART.DMA_Channel = DMA_Channel_4;
+            DMA_InitStruct_USART.DMA_PeripheralBaseAddr = (uint32_t)&(USART3->DR);
         default:
             break;
     }
@@ -137,15 +145,31 @@ void configIRQforUSART(USART_TypeDef* UART){
 }
 
 void sendUARTByDMA(USART_TypeDef* UART, uint8_t *array, uint8_t size){
-    while(USART_GetFlagStatus(USART3, USART_FLAG_TC) == RESET){
+    while(USART_GetFlagStatus(UART, USART_FLAG_TC) == RESET){
     }
-    DMA_Cmd(DMA1_Stream3, DISABLE);
-    while(DMA_GetCmdStatus(DMA1_Stream3) == ENABLE){}
-    DMA_DeInit(DMA1_Stream3);
+    switch ((uint32_t)UART) {
+        case (uint32_t) USART1:
+            //todo не реализовано для USART1
+            break;
+        case (uint32_t) USART2:
+            //todo не реализовано для USART2
+            break;
+        case (uint32_t) USART3:
+            DMA_Cmd(DMA1_Stream3, DISABLE);
+            while(DMA_GetCmdStatus(DMA1_Stream3) == ENABLE){}
+            DMA_DeInit(DMA1_Stream3);
+            break;
+        case (uint32_t) UART4:
+            DMA_Cmd(DMA1_Stream4, DISABLE);
+            while(DMA_GetCmdStatus(DMA1_Stream4) == ENABLE){}
+            DMA_DeInit(DMA1_Stream4);
+        default:
+            break;
+    }
 
     DMA_InitTypeDef DMA_InitStruct_USART;
     DMA_InitStruct_USART.DMA_Channel = DMA_Channel_4;
-    DMA_InitStruct_USART.DMA_PeripheralBaseAddr = (uint32_t)&(USART3->DR);
+    DMA_InitStruct_USART.DMA_PeripheralBaseAddr = (uint32_t)&(UART->DR);
     DMA_InitStruct_USART.DMA_DIR = DMA_DIR_MemoryToPeripheral;
     DMA_InitStruct_USART.DMA_PeripheralInc = DMA_PeripheralInc_Disable;
     DMA_InitStruct_USART.DMA_MemoryInc = DMA_MemoryInc_Enable;
@@ -159,9 +183,27 @@ void sendUARTByDMA(USART_TypeDef* UART, uint8_t *array, uint8_t size){
     DMA_InitStruct_USART.DMA_PeripheralBurst = DMA_PeripheralBurst_Single;
     DMA_InitStruct_USART.DMA_Memory0BaseAddr =  (uint32_t)array;
     DMA_InitStruct_USART.DMA_BufferSize = size;
-    DMA_Init(DMA1_Stream3, &DMA_InitStruct_USART);
-    USART_DMACmd(USART3, USART_DMAReq_Tx, ENABLE);
-    DMA_Cmd(DMA1_Stream3, ENABLE);
+
+    switch ((uint32_t)UART) {
+        case (uint32_t) USART1:
+            //todo не реализовано для USART1
+            break;
+        case (uint32_t) USART2:
+            //todo не реализовано для USART2
+            break;
+        case (uint32_t) USART3:
+            DMA_Init(DMA1_Stream3, &DMA_InitStruct_USART);
+            USART_DMACmd(UART, USART_DMAReq_Tx, ENABLE);
+            DMA_Cmd(DMA1_Stream3, ENABLE);
+            break;
+        case (uint32_t) UART4:
+            DMA_Init(DMA1_Stream4, &DMA_InitStruct_USART);
+            USART_DMACmd(UART, USART_DMAReq_Tx, ENABLE);
+            DMA_Cmd(DMA1_Stream4, ENABLE);
+            break;
+        default:
+            break;
+    }
 }
 
 void testUART(USART_TypeDef* UART){

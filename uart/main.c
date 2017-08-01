@@ -17,15 +17,15 @@ QueueByte queueByte;
 uint8_t array[32];
 
 int main() {
-    initBuffer(USART3, 115200, &queueByte, array);
-    testUART(USART3);
-//    Delay(100000);
+    initBuffer(UART4, 115200, &queueByte, array);
+    testUART(UART4);
+    Delay(100000);
 //    testUART(USART3);
     while(a) {
-        if(isContainRX(USART3) > 0){
-            uint8_t out = takeFromRX(USART3);
-            USART_SendData(USART3, out);
-            while (USART_GetFlagStatus(USART3, USART_FLAG_TC) == RESET){}
+        if(isContainRX(UART4) > 0){
+            uint8_t out = takeFromRX(UART4);
+            USART_SendData(UART4, out);
+            while (USART_GetFlagStatus(UART4, USART_FLAG_TC) == RESET){}
         }
     }
 }

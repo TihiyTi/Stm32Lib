@@ -44,9 +44,15 @@ add_definitions(-DLOG_DMA)
 add_definitions(-DLOG_BUF)
 
 
-add_definitions(-DBUFFER_UART3)
+add_definitions(-DBUFFER_UART4)
 
-
+macro(create_binary target)
+    add_custom_command(
+            TARGET ${target} POST_BUILD
+            COMMAND ${CMAKE_OBJCOPY} -Oihex $<TARGET_FILE:${target}> ${HEX_FILE}
+            COMMAND ${CMAKE_OBJCOPY} -Obinary $<TARGET_FILE:${target}> ${BIN_FILE}
+            COMMENT "Building ${HEX_FILE} \nBuilding ${BIN_FILE}")
+endmacro()
 
 
 add_executable(UartDMA.elf ${UART_DMA_SOURCE} ${LINKER_SCRIPT})
@@ -59,10 +65,12 @@ target_link_libraries(UartTest.elf SPL CMSIS UART UTILS)
 
 set(HEX_FILE ${PROJECT_SOURCE_DIR}/build/UartDMA.hex)
 set(BIN_FILE ${PROJECT_SOURCE_DIR}/build/UartDMA.bin)
-add_custom_command(TARGET UartDMA.elf POST_BUILD
-        COMMAND ${CMAKE_OBJCOPY} -Oihex $<TARGET_FILE:UartDMA.elf> ${HEX_FILE}
-        COMMAND ${CMAKE_OBJCOPY} -Obinary $<TARGET_FILE:UartDMA.elf> ${BIN_FILE}
-        COMMENT "Building ${HEX_FILE} \nBuilding ${BIN_FILE}")
+
+create_binary(UartDMA.elf)
+#add_custom_command(TARGET UartDMA.elf POST_BUILD
+#        COMMAND ${CMAKE_OBJCOPY} -Oihex $<TARGET_FILE:UartDMA.elf> ${HEX_FILE}
+#        COMMAND ${CMAKE_OBJCOPY} -Obinary $<TARGET_FILE:UartDMA.elf> ${BIN_FILE}
+#        COMMENT "Building ${HEX_FILE} \nBuilding ${BIN_FILE}")
 
 set(HEX_FILE ${PROJECT_SOURCE_DIR}/build/UartTest.hex)
 set(BIN_FILE ${PROJECT_SOURCE_DIR}/build/UartTest.bin)
