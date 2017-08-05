@@ -52,9 +52,9 @@ void initQueueInt32(QueueInt32 *A){
 //Methods for byte (uint8_t) queue
 
 void addToQueueByte(QueueByte *A, uint8_t el){
-    if(A->size < SIZE_DSP_BUFFER){
+    if(A->size < A->maxsize){
         A->size++;
-        A->last = (uint8_t) ((A->first + A->size - 1) % SIZE_DSP_BUFFER);
+        A->last = (uint8_t) ((A->first + A->size - 1) % A->maxsize);
         A->buf[A->last] = el;
     }else{
         //todo increment error counter
@@ -65,7 +65,7 @@ void addToQueueByte(QueueByte *A, uint8_t el){
 uint8_t getElementQueueByte(QueueByte *A, uint8_t shift){
     uint16_t i;
     if(shift > A->last){
-        i = (uint16_t) (SIZE_DSP_BUFFER + A->last - shift);
+        i = (uint16_t) (A->maxsize + A->last - shift);
     }else{
         i = A->last - shift;
     }
@@ -76,7 +76,7 @@ uint8_t getElementQueueByte(QueueByte *A, uint8_t shift){
 uint8_t takeQueueByte(QueueByte *A){
     uint8_t result;
     result = A->buf[A->first];
-    if(A->first == SIZE_DSP_BUFFER - 1){
+    if(A->first == A->maxsize - 1){
         A->first = 0;
     }else{
         A->first ++;

@@ -13,8 +13,9 @@ QueueByte* queueByteUSART4;
 uint8_t * bufUSART4;
 
 void initBuffer(USART_TypeDef* UART, uint32_t speed,
-                QueueByte* queueByte, uint8_t * buf){
+                QueueByte* queueByte, uint8_t * buf, uint8_t size){
     initUSART(UART, speed, DMA_ENABLE, IRQ_ENABLE);
+    initQueueByte(queueByte, size);
     switch ((uint32_t)UART) {
         case (uint32_t) USART1:
             queueByteUSART1 = queueByte;
@@ -85,7 +86,7 @@ void USART3_IRQHandler(){
 }
 #endif
 
-#if defined(BUFFER_UART4)
+//#if defined(BUFFER_UART4)
 void UART4_IRQHandler(){
     __disable_irq();
     if (USART_GetITStatus(UART4, USART_IT_RXNE) != RESET){
@@ -98,7 +99,7 @@ void UART4_IRQHandler(){
     }
     __enable_irq();
 }
-#endif
+//#endif
 
 
 uint8_t takeFromRX(USART_TypeDef* UART){
@@ -120,6 +121,13 @@ uint8_t takeFromRX(USART_TypeDef* UART){
             result = takeQueueByte(queueByteUSART3);
             USART_ITConfig(USART3, USART_IT_RXNE, ENABLE);
             break;
+        case (uint32_t) UART4:
+            //Block add element to queue to DISABLE irq from UART
+            // Safety take element from queue
+            USART_ITConfig(UART4, USART_IT_RXNE, DISABLE);
+            result = takeQueueByte(queueByteUSART4);
+            USART_ITConfig(UART4, USART_IT_RXNE, ENABLE);
+            break;
         default:
             result = 0;
             break;
@@ -135,6 +143,8 @@ uint8_t isContainRX(USART_TypeDef* UART){
         return 0;
     }else if(UART == USART3){
         return queueByteUSART3 -> size;
+    }else if(UART == UART4){
+        return queueByteUSART4 -> size;
     }else{
         return 0;
     }

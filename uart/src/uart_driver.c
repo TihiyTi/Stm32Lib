@@ -134,6 +134,11 @@ void configIRQforUSART(USART_TypeDef* UART){
             NVIC_EnableIRQ(USART3_IRQn);
             nvic.NVIC_IRQChannel = USART3_IRQn;
             break;
+        case (uint32_t) UART4:
+            USART_ITConfig(UART4, USART_IT_RXNE, ENABLE);
+            NVIC_EnableIRQ(UART4_IRQn);
+            nvic.NVIC_IRQChannel = UART4_IRQn;
+            break;
         default:
             break;
     }
