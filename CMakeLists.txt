@@ -15,12 +15,13 @@ add_library(CMSIS
 add_library(UTILS
         utils/printf.c
         utils/queue.c)
-add_library(NEXTION
-        uart/src/nextion_manager.c)
+add_library(NEXTION uart/src/nextion_manager.c)
+#add_library(DEF def/def.c)
 
 include_directories(utils)
 include_directories(uart_dma/inc)
 include_directories(nextion/inc)
+#include_directories(def)
 include_directories(Drivers/CMSIS/Include)
 include_directories(Drivers/CMSIS/Device/ST/STM32F4xx/Include)
 include_directories(Drivers/STM32F4xx_StdPeriph_Driver/inc)
@@ -48,12 +49,13 @@ target_link_libraries(UartDMA.elf SPL CMSIS )
 
 create_binary(UartDMA.elf UartDMA)
 
-
 add_subdirectory( uart)
 #add_subdirectory( nextion)
 
+# Модуль для примера использования define-ов при использовании  CMake
+add_subdirectory(def)
 
-#add_definitions(-DBUFFER_UART4)
+
 
 #add_executable(NextionTest.elf uart/NextionTest.c nextion/src/nextion_manager.c ${LINKER_SCRIPT})
 #target_link_libraries(NextionTest.elf SPL CMSIS UART UTILS NEXTION)
