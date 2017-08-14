@@ -69,7 +69,7 @@
   */
 
 /* Includes ------------------------------------------------------------------*/
-#include <stm32f4xx_conf.h>
+#include "stm32f4xx_conf.h"
 #include "stm32f4xx_flash.h"
 
 /** @addtogroup STM32F4xx_StdPeriph_Driver

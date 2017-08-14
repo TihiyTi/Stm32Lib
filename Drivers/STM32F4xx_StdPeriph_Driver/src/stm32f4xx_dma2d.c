@@ -55,7 +55,7 @@
   */ 
 
 /* Includes ------------------------------------------------------------------*/
-#include <stm32f4xx_conf.h>
+#include "stm32f4xx_conf.h"
 #include "stm32f4xx_dma2d.h"
 #include "stm32f4xx_rcc.h"
 

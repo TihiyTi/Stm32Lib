@@ -121,7 +121,7 @@
   */ 
 
 /* Includes ------------------------------------------------------------------*/
-#include <stm32f4xx_conf.h>
+#include "stm32f4xx_conf.h"
 #include "stm32f4xx_dma.h"
 #include "stm32f4xx_rcc.h"
 

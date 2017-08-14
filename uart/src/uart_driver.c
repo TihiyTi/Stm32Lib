@@ -4,7 +4,7 @@
 
 #include <stm32f4xx.h>
 #include <misc.h>
-#include <stm32f4xx_conf.h>
+#include "stm32f4xx_conf.h"
 #include "uart_driver.h"
 #include "stm32f4xx_usart.h"
 

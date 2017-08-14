@@ -103,7 +103,7 @@
   */ 
 
 /* Includes ------------------------------------------------------------------*/
-#include <stm32f4xx_conf.h>
+#include "stm32f4xx_conf.h"
 #include "stm32f4xx_adc.h"
 #include "stm32f4xx_rcc.h"
 
