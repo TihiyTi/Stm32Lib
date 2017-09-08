@@ -3,12 +3,13 @@
 #include "stm32f4xx_dac.h"
 #include "stm32f4xx_tim.h"
 #include "dac_driver.h"
+#include "tim_driver.h"
 
 //Arrays for using with DMA
-uint8_t *arrayDac1;
-uint8_t sizeDac1;
-uint8_t *arrayDac2;
-uint8_t sizeDac2;
+uint16_t *arrayDac1;
+uint16_t sizeDac1;
+uint16_t *arrayDac2;
+uint16_t sizeDac2;
 
 void configDAC(uint32_t dac_channel);
 void configDMAforDAC(uint32_t dac_channel, TIM_TypeDef * timer);
@@ -38,10 +39,16 @@ void initDAC(uint32_t dac_channel){
     /* Enable DAC Channel1 */
     DAC_Cmd(DAC_Channel_2, ENABLE);
 }
-void initDACwithDMA(uint32_t dac_channel, TIM_TypeDef * timer){
+
+void initDACwithDMA(uint32_t dac_channel, TIM_TypeDef * timer, uint16_t *array, uint16_t size){
     RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOA, ENABLE);
-    RCC_APB1PeriphClockCmd(RCC_APB1Periph_DAC, ENABLE);
     RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_DMA1, ENABLE);
+    RCC_APB1PeriphClockCmd(RCC_APB1Periph_DAC, ENABLE);
+
+    arrayDac1 = array;
+    arrayDac2 = array;
+    sizeDac1 = size;
+    sizeDac2 = size;
 
     GPIO_InitTypeDef GPIO_DAC_Structure;
     if(dac_channel == DAC_Channel_1){
@@ -54,7 +61,7 @@ void initDACwithDMA(uint32_t dac_channel, TIM_TypeDef * timer){
     GPIO_Init(GPIOA, &GPIO_DAC_Structure);
 
     DAC_InitTypeDef DAC_InitStructure;
-    switch ((uint32_t)timer){5
+    switch ((uint32_t)timer){
         case (uint32_t)TIM2:
             DAC_InitStructure.DAC_Trigger = DAC_Trigger_T2_TRGO;
             break;
@@ -80,18 +87,21 @@ void initDACwithDMA(uint32_t dac_channel, TIM_TypeDef * timer){
     DAC_InitStructure.DAC_OutputBuffer = DAC_OutputBuffer_Enable;
     DAC_Init(dac_channel, &DAC_InitStructure);
 
-    /* Enable DAC Channel1 */
-    DAC_Cmd(DAC_Channel_2, ENABLE);
+
 
     DMA_InitTypeDef DMA_InitStructure;
     if(dac_channel == DAC_Channel_1){
         DMA_DeInit(DMA1_Stream5);
         DMA_InitStructure.DMA_Memory0BaseAddr = (uint32_t)arrayDac1;
         DMA_InitStructure.DMA_BufferSize = sizeDac1;
+//        DMA_InitStructure.DMA_Memory0BaseAddr = (uint32_t)&form1;
+//        DMA_InitStructure.DMA_BufferSize = NUM_OF_SIGNAL_POINT;
     } else{
         DMA_DeInit(DMA1_Stream6);
         DMA_InitStructure.DMA_Memory0BaseAddr = (uint32_t)arrayDac2;
         DMA_InitStructure.DMA_BufferSize = sizeDac2;
+//        DMA_InitStructure.DMA_Memory0BaseAddr = (uint32_t)&form1;
+//        DMA_InitStructure.DMA_BufferSize = NUM_OF_SIGNAL_POINT;
     }
     DMA_InitStructure.DMA_Channel = DMA_Channel_7;
     DMA_InitStructure.DMA_PeripheralBaseAddr = DAC_DHR12R2_ADDRESS;
@@ -113,10 +123,17 @@ void initDACwithDMA(uint32_t dac_channel, TIM_TypeDef * timer){
         DMA_Init(DMA1_Stream6, &DMA_InitStructure);
     }
 
+    /* Enable DAC Channel1 */
+    DAC_Cmd(dac_channel, ENABLE);
+
     DAC_DMACmd(dac_channel, ENABLE);
+
+//    TIM5_Config(FREQ_1Hz);
+//    timerConfigForDAC_DMA(timer);
 }
 
-void setValue(uint32_t dac_channel){
-    //todo not suported yet
+void timerConfigForDAC_DMA(TIM_TypeDef *timer, uint32_t period, uint32_t prescaler, uint32_t division){
+    initTimer(timer, period, prescaler, division);
+    TIM_Cmd(timer, ENABLE);
+    TIM_SelectOutputTrigger(timer, TIM_TRGOSource_Update);
 }
-

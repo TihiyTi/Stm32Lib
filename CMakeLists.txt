@@ -9,6 +9,7 @@ add_library(SPL
         Drivers/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_usart.c
         Drivers/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c
         Drivers/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dac.c
+        Drivers/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_tim.c
         Drivers/STM32F4xx_StdPeriph_Driver/src/misc.c)
 add_library(CMSIS
         Drivers/CMSIS/Device/ST/STM32F4xx/Source/Templates/gcc_ride7/startup_stm32f40xx.s
@@ -45,11 +46,12 @@ macro(create_binary target name)
             COMMENT "Building ${HEX_FILE} \nBuilding ${BIN_FILE}")
 endmacro()
 
-add_subdirectory( uart)
+#add_subdirectory( uart)
 #add_subdirectory( nextion)
 
 # Модуль для примера использования define-ов при использовании  CMake
-add_subdirectory(def)
+#add_subdirectory(def)
+add_subdirectory(Examples)
 add_subdirectory(Examples/dac)
 
 
