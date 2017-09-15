@@ -23,3 +23,8 @@ create_binary(Sample1.elf Sample1)
 add_executable(Sample2.elf sample2.c  ${LINKER_SCRIPT})
 target_link_libraries(Sample2.elf SPL CMSIS TiLib)
 create_binary(Sample2.elf Sample2)
+
+#Example for TIM
+add_executable(Sample3.elf sample3.c  ${LINKER_SCRIPT})
+target_link_libraries(Sample3.elf SPL CMSIS TiLib)
+create_binary(Sample3.elf Sample3)
