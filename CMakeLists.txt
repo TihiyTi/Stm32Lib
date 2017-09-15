@@ -14,6 +14,17 @@ add_library(SPL
 add_library(CMSIS
         Drivers/CMSIS/Device/ST/STM32F4xx/Source/Templates/gcc_ride7/startup_stm32f40xx.s
         Drivers/CMSIS/Device/ST/STM32F4xx/Source/Templates/system_stm32f4xx.c)
+add_library(RTT
+        Drivers/RTT/Syscalls/RTT_Syscalls_GCC.c
+        Drivers/RTT/RTT/SEGGER_RTT.c
+        Drivers/RTT/RTT/SEGGER_RTT_printf.c
+)
+add_library(SSV
+        Drivers/SSV/SEGGER_SYSVIEW_Config.c
+        Drivers/SSV/SEGGER/SEGGER_SYSVIEW.c
+        Drivers/SSV/SEGGER/SEGGER_RTT.c
+        Drivers/RTT/RTT/SEGGER_RTT_printf.c
+        )
 add_library(UTILS
         utils/printf.c
         utils/queue.c)
@@ -27,7 +38,9 @@ include_directories(nextion/inc)
 include_directories(Drivers/CMSIS/Include)
 include_directories(Drivers/CMSIS/Device/ST/STM32F4xx/Include)
 include_directories(Drivers/STM32F4xx_StdPeriph_Driver/inc)
-
+include_directories(Drivers/RTT/RTT)
+include_directories(Drivers/SSV/Config)
+include_directories(Drivers/SSV/SEGGER)
 
 #add_definitions(-DDiscovery)
 add_definitions(-DSTM32F40_41xxx)

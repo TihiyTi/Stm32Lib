@@ -23,3 +23,14 @@ create_binary(Sample1.elf Sample1)
 add_executable(Sample2.elf sample2.c  ${LINKER_SCRIPT})
 target_link_libraries(Sample2.elf SPL CMSIS TiLib)
 create_binary(Sample2.elf Sample2)
+
+
+
+#Example for Segger RTT
+add_executable(Sample4.elf sample4.c  ${LINKER_SCRIPT})
+target_link_libraries(Sample4.elf SPL CMSIS RTT TiLib)
+create_binary(Sample4.elf Sample4)
+#Example for Segger SystemView SSV
+add_executable(Sample5.elf sample5.c  ${LINKER_SCRIPT})
+target_link_libraries(Sample5.elf SPL CMSIS SSV TiLib)
+create_binary(Sample5.elf Sample5)
