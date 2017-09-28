@@ -43,7 +43,7 @@ include_directories(Drivers/SSV/Config)
 include_directories(Drivers/SSV/SEGGER)
 
 #add_definitions(-DDiscovery)
-add_definitions(-DSTM32F40_41xxx)
+#add_definitions(-DSTM32F40_41xxx)
 #add_definitions(-DARM_MATH_CM4)
 
 

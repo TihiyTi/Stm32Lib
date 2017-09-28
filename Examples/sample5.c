@@ -1,3 +1,4 @@
+//Work with 407 and 429 dev board
 #include "stm32f4xx.h"
 
 #include <stdio.h>
@@ -26,7 +27,8 @@ int main(){
 
     initTimerWithIRQ(TIM2, 1000);
     startTimer(TIM2);
-    initGPIO(GPIOD, GPIO_Pin_15);
+    initDiscLed(LD3_ORANGE);
+//    initGPIO(GPIOD, GPIO_Pin_15);
 
     while(a){
         a++;
@@ -37,7 +39,7 @@ void timerInterrupt(){
     SEGGER_SYSVIEW_RecordEnterISR();
     if(TIM_GetITStatus(TIM2, TIM_IT_Update) == SET){
         TIM_ClearITPendingBit(TIM2, TIM_IT_Update);
-        GPIO_ToggleBits(GPIOD, GPIO_Pin_15);
+        GPIO_ToggleBits(LED_PORT, LD_ORANGE_Pin);
         SEGGER_RTT_printf(0, "Togle LED, a : %p.\r\n", a);
     }
     SEGGER_SYSVIEW_RecordExitISR();

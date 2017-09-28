@@ -13,23 +13,27 @@
 void initDiscLed(LDx_Color led){
     switch (led){
         case LD3_ORANGE:
-            initGPIO(GPIOD, GPIO_Pin_13);
+            initGPIO(LED_PORT, LD_ORANGE_Pin);
             break;
         case LD4_GREEN:
-            initGPIO(GPIOD, GPIO_Pin_12);
+            initGPIO(LED_PORT, LD_GREEN_Pin);
             break;
         case LD5_RED:
-            initGPIO(GPIOD, GPIO_Pin_14);
+            initGPIO(LED_PORT, LD_RED_Pin);
             break;
         case LD6_BLUE:
-            initGPIO(GPIOD, GPIO_Pin_15);
+            initGPIO(LED_PORT, LD_BLUE_Pin);
             break;
         default:
             break;
     }
 }
 void testDscLedOn(){
-    GPIO_SetBits(GPIOD, GPIO_Pin_12 | GPIO_Pin_13 | GPIO_Pin_14 | GPIO_Pin_15);
+#ifdef STM32F429_439xx
+    GPIO_ResetBits(LED_PORT, LD_ORANGE_Pin | LD_GREEN_Pin| LD_RED_Pin| LD_BLUE_Pin);
+#else
+    GPIO_SetBits(LED_PORT, LD_ORANGE_Pin | LD_GREEN_Pin| LD_RED_Pin| LD_BLUE_Pin);
+#endif
 }
 void initGPIO(GPIO_TypeDef* GPIOx, uint16_t GPIO_Pin){
     switch ((uint32_t)GPIOx){
@@ -47,6 +51,12 @@ void initGPIO(GPIO_TypeDef* GPIOx, uint16_t GPIO_Pin){
             break;
         case (uint32_t)GPIOE:
             RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOE, ENABLE);
+            break;
+        case (uint32_t)GPIOF:
+            RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOF, ENABLE);
+            break;
+        case (uint32_t)GPIOG:
+            RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOG, ENABLE);
             break;
         default:
             break;
