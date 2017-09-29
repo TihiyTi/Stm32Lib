@@ -1,8 +1,0 @@
-//DMA1_Stream2_IRQHandler
-// Created by Alex on 27.07.2017.
-//
-
-#ifndef STMSAMPLE_UART_MANAGER_H
-#define STMSAMPLE_UART_MANAGER_H
-
-#endif //STMSAMPLE_UART_MANAGER_H

@@ -3,9 +3,9 @@
 //
 
 #include <queue.h>
-#include "../inc/nextion_manager.h"
-#include "../inc/uart_buffer.h"
-#include "../inc/uart_driver.h"
+#include "nextion_manager.h"
+#include "uart_buffer.h"
+#include "uart_driver.h"
 
 #define NEXTION_WORD 7
 

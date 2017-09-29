@@ -2,8 +2,8 @@
 #include <string.h>
 #include <queue.h>
 #include "stm32f4xx.h"
-#include "../Library/uart/uart_buffer.h"
 #include "../Library/uart/uart_driver.h"
+#include "../Library/uart/uart_buffer.h"
 
 void Delay(uint32_t delay);
 
@@ -19,7 +19,6 @@ int main() {
     initBuffer(USART3, 115200, &queueByte, array, 32);
     testUART(USART3);
     Delay(100000);
-//    testUART(USART3);
     while(a) {
         if(isContainRX(USART3) > 0){
             uint8_t out = takeFromRX(USART3);

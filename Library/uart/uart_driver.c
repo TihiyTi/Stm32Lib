@@ -174,6 +174,7 @@ void sendUARTByDMA(USART_TypeDef* UART, uint8_t *array, uint8_t size){
     }
 
     DMA_InitTypeDef DMA_InitStruct_USART;
+    //todo проверить для всех ли UART channel == 4
     DMA_InitStruct_USART.DMA_Channel = DMA_Channel_4;
     DMA_InitStruct_USART.DMA_PeripheralBaseAddr = (uint32_t)&(UART->DR);
     DMA_InitStruct_USART.DMA_DIR = DMA_DIR_MemoryToPeripheral;

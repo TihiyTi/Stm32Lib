@@ -1,11 +1,11 @@
 #include <stdio.h>
 #include <string.h>
 #include <queue.h>
-#include <nextion_manager.h>
+#include "../Library/uart/nextion_manager.h"
 #include "stm32f4xx.h"
-#include "uart_buffer.h"
-#include "uart_logger.h"
-#include "uart_driver.h"
+#include "../Library/uart/uart_buffer.h"
+#include "../Library/uart/uart_logger.h"
+#include "../Library/uart/uart_driver.h"
 
 void Delay(uint32_t delay);
 

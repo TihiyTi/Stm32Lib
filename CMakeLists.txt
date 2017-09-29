@@ -12,23 +12,29 @@ add_library(SPL
         Drivers/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_tim.c
         Drivers/STM32F4xx_StdPeriph_Driver/src/misc.c)
 add_library(CMSIS
-        Drivers/CMSIS/Device/ST/STM32F4xx/Source/Templates/gcc_ride7/startup_stm32f40xx.s
+        Drivers/CMSIS/Device/ST/STM32F4xx/Source/Templates/gcc_ride7/startup_stm32f40_41xxx.s
         Drivers/CMSIS/Device/ST/STM32F4xx/Source/Templates/system_stm32f4xx.c)
 add_library(RTT
         Drivers/RTT/Syscalls/RTT_Syscalls_GCC.c
         Drivers/RTT/RTT/SEGGER_RTT.c
-        Drivers/RTT/RTT/SEGGER_RTT_printf.c
-)
+        Drivers/RTT/RTT/SEGGER_RTT_printf.c)
 add_library(SSV
         Drivers/SSV/SEGGER_SYSVIEW_Config.c
         Drivers/SSV/SEGGER/SEGGER_SYSVIEW.c
         Drivers/SSV/SEGGER/SEGGER_RTT.c
-        Drivers/RTT/RTT/SEGGER_RTT_printf.c
+        Drivers/RTT/RTT/SEGGER_RTT_printf.c)
+add_library(TiLib
+        Library/rcc/rcc_driver.c
+        Library/gpio/gpio_driver.c
+        Library/tim/tim_driver.c
+        Library/dac/dac_driver.c
+        Library/uart/uart_driver.c
+        Library/uart/uart_buffer.c
         )
 add_library(UTILS
         utils/printf.c
         utils/queue.c)
-add_library(NEXTION uart/src/nextion_manager.c)
+add_library(NEXTION Library/uart/nextion_manager.c)
 #add_library(DEF def/def.c)
 
 include_directories(utils)
@@ -41,13 +47,17 @@ include_directories(Drivers/STM32F4xx_StdPeriph_Driver/inc)
 include_directories(Drivers/RTT/RTT)
 include_directories(Drivers/SSV/Config)
 include_directories(Drivers/SSV/SEGGER)
+include_directories(Library/rcc)
+include_directories(Library/gpio)
+include_directories(Library/tim)
+include_directories(Library/dac)
+include_directories(Library/uart)
 
-#add_definitions(-DDiscovery)
-#add_definitions(-DSTM32F40_41xxx)
+
+
+add_definitions(-DDiscovery)
+add_definitions(-DSTM32F40_41xxx)
 #add_definitions(-DARM_MATH_CM4)
-
-
-add_definitions(-DBUFFER_UART4)
 
 macro(create_binary target name)
     set(HEX_FILE ${PROJECT_SOURCE_DIR}/build/${name}.hex)
@@ -64,8 +74,10 @@ endmacro()
 
 # Модуль для примера использования define-ов при использовании  CMake
 #add_subdirectory(def)
+#add_subdirectory(Library)
 add_subdirectory(Examples)
-add_subdirectory(Examples/dac)
+#add_subdirectory(uart)
+#add_subdirectory(Examples/dac)
 
 
 #add_executable(NextionTest.elf uart/NextionTest.c nextion/src/nextion_manager.c ${LINKER_SCRIPT})
