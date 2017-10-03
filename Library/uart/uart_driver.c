@@ -9,10 +9,13 @@
 #include "stm32f4xx_usart.h"
 
 uint8_t testArray[] = {1,2,3,4,5,6,7,8,9,10};
+int uart_wait = 0;
+int dma_wait = 0;
 
 void configUSART(USART_TypeDef* UART, uint32_t speed);
 void configDMAforUSART(USART_TypeDef* UART);
 void configIRQforUSART(USART_TypeDef* UART);
+uint8_t sendUARTByDMAComplete(USART_TypeDef* UART);
 
 void initUSART(USART_TypeDef* UART, uint32_t speed, DMA_Trancieve_State dma_state, IRQ_Recieve_State irq_state){
     configUSART(UART, speed);
@@ -211,13 +214,37 @@ void sendUARTByDMA(USART_TypeDef* UART, uint8_t *array, uint8_t size){
         default:
             break;
     }
+    // Флаг TC очищается автоматически при записи регистра USART DR
+    // НО если DMA записывает данные флаг TC не сбрасывается
+    USART_ClearFlag(UART, USART_FLAG_TC);
+}
+uint8_t sendUARTByDMAComplete(USART_TypeDef* UART){
+    switch ((uint32_t)UART) {
+        case (uint32_t) USART1:
+            //todo не реализовано для USART1
+            return 0;
+        case (uint32_t) USART2:
+            //todo не реализовано для USART2
+            return 0;
+        case (uint32_t) USART3:
+            return (uint8_t)(USART_GetFlagStatus(UART, USART_FLAG_TC) == RESET)|(DMA_GetFlagStatus(DMA1_Stream3, DMA_FLAG_TCIF3)==RESET);
+        case (uint32_t) UART4:
+            return (uint8_t)(USART_GetFlagStatus(UART, USART_FLAG_TC) == RESET)|(DMA_GetFlagStatus(DMA1_Stream4, DMA_FLAG_TCIF4)==RESET);
+        default:
+            return 0;
+    }
+
 }
 
 void testUART(USART_TypeDef* UART){
     USART_SendData(UART, 0xAA);
-    while (USART_GetFlagStatus(UART, USART_FLAG_TC) == RESET){}
 
     sendUARTByDMA(UART, testArray, 10);
-    while(USART_GetFlagStatus(UART, USART_FLAG_TC) == RESET){}
+    sendUARTByDMA(UART, testArray, 10);
+
+    while (USART_GetFlagStatus(UART, USART_FLAG_TC) == RESET){
+        uart_wait ++;
+    }
+    USART_SendData(UART, 0xAA);
 
 }

@@ -12,11 +12,11 @@ QueueInt32 queueInt32;
 const char word1[] = "word1";
 const char word2[] = "word2";
 
-QueueByte queueByte;
+QueueByte rxQueue;
 uint8_t array[32];
 
 int main() {
-    initBuffer(USART3, 115200, &queueByte, array, 32);
+    initBuffer(USART3, 115200, &rxQueue, array, 32);
     testUART(USART3);
     Delay(100000);
     while(a) {

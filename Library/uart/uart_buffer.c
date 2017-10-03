@@ -26,7 +26,10 @@ uint8_t * bufUSART4;
 //todo вынести в структуру отображающую статус модуля UART буфферов
 uint8_t dma_wait_UART3 = 0;
 
+//#define USART3_addToBuffer USART3_IRQHandler
+
 void sendBuffer(USART_TypeDef* UART);
+void USART3_addToBuffer() __attribute__((used));
 
 void initBuffer(USART_TypeDef* UART, uint32_t speed,
                 QueueByte* queueByte, uint8_t * buf, uint8_t size){
@@ -57,12 +60,13 @@ void initBuffer(USART_TypeDef* UART, uint32_t speed,
 }
 
 void initBufferTX(USART_TypeDef* UART,
-                  BufferDoubleByte* bufferDoubleByte, uint8_t * buf, uint8_t size){
+                  BufferDoubleByte* bufferDoubleByte, uint8_t * buf1, uint8_t * buf2, uint8_t size){
     initBufferDoubleByte(bufferDoubleByte, size);
     switch ((uint32_t)UART) {
         case (uint32_t) USART1:
             bufferByteUSART1_TX = bufferDoubleByte;
-            bufUSART1_RX = buf;
+            bufUSART1_TX1 = buf1;
+            bufUSART1_TX2 = buf2;
             bufferByteUSART1_TX->buf1= bufUSART1_TX1;
             bufferByteUSART1_TX->buf2= bufUSART1_TX2;
             break;
@@ -71,14 +75,15 @@ void initBufferTX(USART_TypeDef* UART,
 //            break;
         case (uint32_t) USART3:
             bufferByteUSART3_TX = bufferDoubleByte;
-            bufUSART3_RX = buf;
-            bufferByteUSART1_TX->buf1 = bufUSART3_TX1;
-            bufferByteUSART1_TX->buf2 = bufUSART3_TX2;
+            bufUSART3_TX1 = buf1;
+            bufUSART3_TX2 = buf2;
+            bufferByteUSART3_TX->buf1 = bufUSART3_TX1;
+            bufferByteUSART3_TX->buf2 = bufUSART3_TX2;
             break;
 //        case (uint32_t) UART4:
 //            queueByteUSART4 = queueByte;
-//            bufUSART4 = buf;
-//            queueByteUSART4->buf = bufUSART4;
+//            bufUSART4 = buf1;
+//            queueByteUSART4->buf1 = bufUSART4;
 //            break;
         default:
             break;
@@ -210,7 +215,7 @@ void sendBuffer(USART_TypeDef* UART){
             if(bufferByteUSART3_TX->activeBuffer == 1){
                 sendUARTByDMA(UART, bufferByteUSART3_TX->buf1, bufferByteUSART3_TX->head);
             }if(bufferByteUSART3_TX->activeBuffer == 2){
-                sendUARTByDMA(UART, bufferByteUSART3_TX->buf1, bufferByteUSART3_TX->head);
+                sendUARTByDMA(UART, bufferByteUSART3_TX->buf2, bufferByteUSART3_TX->head);
             }
             toggleActiveBufferDoubleByte(bufferByteUSART3_TX);
             break;

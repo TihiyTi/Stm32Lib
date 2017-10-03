@@ -56,7 +56,7 @@ include_directories(Library/uart)
 
 
 add_definitions(-DDiscovery)
-add_definitions(-DSTM32F40_41xxx)
+#add_definitions(-DSTM32F40_41xxx)
 #add_definitions(-DARM_MATH_CM4)
 
 macro(create_binary target name)

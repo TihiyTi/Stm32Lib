@@ -114,7 +114,7 @@ uint8_t addToBufferDoubleByte(BufferDoubleByte *A, uint8_t addingByte){
     A->head++;
 
     if(A->head == A->maxsize){
-        A->head =0;
+//        A->head =0;
         return 1;
     }
     return 0;
