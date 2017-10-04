@@ -52,18 +52,18 @@ project(sample C ASM)
 #create_binary(uartSample1.elf uartSample1)
 
 add_library(TiLib_uartSample2
-        ../Library/rcc/rcc_driver.c
-        ../Library/gpio/gpio_driver.c
-        ../Library/tim/tim_driver.c
-        ../Library/dac/dac_driver.c
-        ../Library/uart/uart_driver.c
-        ../Library/uart/uart_buffer.c
+        ../TiStmLib/rcc/rcc_driver.c
+        ../TiStmLib/gpio/gpio_driver.c
+        ../TiStmLib/tim/tim_driver.c
+        ../TiStmLib/dac/dac_driver.c
+        ../TiStmLib/uart/uart_driver.c
+        ../TiStmLib/uart/uart_buffer.c
         )
-include_directories(../Library/rcc)
-include_directories(../Library/gpio)
-include_directories(../Library/tim)
-include_directories(../Library/dac)
-include_directories(../Library/uart)
+include_directories(../TiStmLib/rcc)
+include_directories(../TiStmLib/gpio)
+include_directories(../TiStmLib/tim)
+include_directories(../TiStmLib/dac)
+include_directories(../TiStmLib/uart)
 target_compile_definitions(TiLib_uartSample2 PRIVATE USART3_addToBuffer=USART3_IRQHandler)
 
 ## Example for testing buffered uart - two dimentions
