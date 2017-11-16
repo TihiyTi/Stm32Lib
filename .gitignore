@@ -1,0 +1,12 @@
+
+\.idea/
+
+cmake-build-debug/
+
+def/build/
+
+Examples/adc/build/
+
+Examples/build/
+
+Examples/dac/build/
