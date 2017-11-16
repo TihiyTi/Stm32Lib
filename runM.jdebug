@@ -16,7 +16,7 @@ void OnProjectLoad (void) {
   Project.SetTIFSpeed ("8 MHz");
   Project.AddSvdFile ("C:/Program Files/SEGGER/Ozone V2.40d/Config/CPU/Cortex-M4.svd");
   Project.AddSvdFile ("C:/Program Files/SEGGER/Ozone V2.40d/Config/CPU/Cortex-M4.svd");
-  File.Open ("C:/Users/Aleksey/ClionProjects/Stm32Lib/cmake-build-debug/uart/Test.elf");
+  File.Open ("C:/Users/Aleksey/ClionProjects/Stm32Lib/cmake-build-debug/Examples/nextion/nextionSample.elf");
 }
 
 /*********************************************************************

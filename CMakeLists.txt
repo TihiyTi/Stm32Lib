@@ -30,11 +30,12 @@ add_library(TiLib
         TiStmLib/dac/dac_driver.c
         TiStmLib/uart/uart_driver.c
         TiStmLib/uart/uart_buffer.c
+#        Examples/nextion/nextion_manager.c
         )
 add_library(UTILS
         utils/printf.c
         utils/queue.c)
-add_library(NEXTION TiStmLib/uart/nextion_manager.c)
+#add_library(NEXTION Examples/nextion/nextion_manager.c)
 #add_library(DEF def/def.c)
 
 include_directories(utils)
@@ -75,9 +76,9 @@ endmacro()
 # Модуль для примера использования define-ов при использовании  CMake
 #add_subdirectory(def)
 #add_subdirectory(Library)
-add_subdirectory(Examples)
+#add_subdirectory(Examples)
 #add_subdirectory(uart)
-#add_subdirectory(Examples/dac)
+add_subdirectory(Examples/nextion)
 
 
 #add_executable(NextionTest.elf uart/NextionTest.c nextion/src/nextion_manager.c ${LINKER_SCRIPT})
