@@ -1,0 +1,3 @@
+[submodule "TiStmLib"]
+	path = TiStmLib
+	url = https://github.com/TihiyTi/TiStmLib.git

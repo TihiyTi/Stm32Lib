@@ -1,6 +1,25 @@
 
 \.idea/
 
+cmake-build-debugstm32f429/
+
+cmake-build-debug/
+
+def/build/
+
+nextion/build/
+
+uart/build/
+
+Examples/build/
+
+Examples/dac/build/
+
+build/
+
+
+\.idea/
+
 cmake-build-debug/
 
 def/build/

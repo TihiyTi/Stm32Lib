@@ -24,17 +24,17 @@ add_library(SSV
         Drivers/SSV/SEGGER/SEGGER_RTT.c
         Drivers/RTT/RTT/SEGGER_RTT_printf.c)
 add_library(TiLib
-        Library/rcc/rcc_driver.c
-        Library/gpio/gpio_driver.c
-        Library/tim/tim_driver.c
-        Library/dac/dac_driver.c
-        Library/uart/uart_driver.c
-        Library/uart/uart_buffer.c
+        TiStmLib/rcc/rcc_driver.c
+        TiStmLib/gpio/gpio_driver.c
+        TiStmLib/tim/tim_driver.c
+        TiStmLib/dac/dac_driver.c
+        TiStmLib/uart/uart_driver.c
+        TiStmLib/uart/uart_buffer.c
         )
 add_library(UTILS
         utils/printf.c
         utils/queue.c)
-add_library(NEXTION Library/uart/nextion_manager.c)
+add_library(NEXTION TiStmLib/uart/nextion_manager.c)
 #add_library(DEF def/def.c)
 
 include_directories(utils)
@@ -47,16 +47,16 @@ include_directories(Drivers/STM32F4xx_StdPeriph_Driver/inc)
 include_directories(Drivers/RTT/RTT)
 include_directories(Drivers/SSV/Config)
 include_directories(Drivers/SSV/SEGGER)
-include_directories(Library/rcc)
-include_directories(Library/gpio)
-include_directories(Library/tim)
-include_directories(Library/dac)
-include_directories(Library/uart)
+include_directories(TiStmLib/rcc)
+include_directories(TiStmLib/gpio)
+include_directories(TiStmLib/tim)
+include_directories(TiStmLib/dac)
+include_directories(TiStmLib/uart)
 
 
 
 add_definitions(-DDiscovery)
-add_definitions(-DSTM32F40_41xxx)
+#add_definitions(-DSTM32F40_41xxx)
 #add_definitions(-DARM_MATH_CM4)
 
 macro(create_binary target name)
