@@ -30,7 +30,7 @@ add_library(TiLib
         TiStmLib/dac/dac_driver.c
         TiStmLib/uart/uart_driver.c
         TiStmLib/uart/uart_buffer.c
-#        Examples/nextion/nextion_manager.c
+        TiStmLib/device/nextion/nextion_core.c
         )
 add_library(UTILS
         utils/printf.c
@@ -40,7 +40,6 @@ add_library(UTILS
 
 include_directories(utils)
 include_directories(uart_dma/inc)
-include_directories(nextion/inc)
 #include_directories(def)
 include_directories(Drivers/CMSIS/Include)
 include_directories(Drivers/CMSIS/Device/ST/STM32F4xx/Include)
@@ -53,12 +52,13 @@ include_directories(TiStmLib/gpio)
 include_directories(TiStmLib/tim)
 include_directories(TiStmLib/dac)
 include_directories(TiStmLib/uart)
-
+include_directories(TiStmLib/device/nextion)
 
 
 add_definitions(-DDiscovery)
 #add_definitions(-DSTM32F40_41xxx)
 #add_definitions(-DARM_MATH_CM4)
+add_definitions(-DUSART4_addToBuffer=UART4_IRQHandler)
 
 macro(create_binary target name)
     set(HEX_FILE ${PROJECT_SOURCE_DIR}/build/${name}.hex)
